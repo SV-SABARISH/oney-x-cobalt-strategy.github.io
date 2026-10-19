@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oney BNPL Debt & Capacity Assessment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --panel:#dfded9; --panel-line:#cfcec8; --card:#f3f2ee;
+  --ink:#2a332c; --muted:#5d645e; --green:#4f6451; --sage:#8a9680; --slate:#6c726b;
+  --wine:#832c40; --pink:#f3d9de; --mint:#cdd6cb;
+  --serif:'Lora',Georgia,'Times New Roman',serif;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);padding:28px}
+.wrap{max-width:1180px;margin:0 auto}
+header{display:flex;justify-content:space-between;align-items:center;padding-bottom:18px;border-bottom:1px solid #e2e1dc;margin-bottom:28px;gap:16px;flex-wrap:wrap}
+h1{margin:0;font-size:28px;font-weight:600}
+.sub{font-family:var(--mono);font-style:italic;color:var(--muted);font-size:14px;margin-top:2px}
+.brands{display:flex;align-items:center;gap:18px}
+.brand{text-align:left}
+.brand b{display:block;font-size:22px;line-height:1}
+.brand small{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted)}
+.oney b{color:var(--green);text-transform:lowercase;font-size:23px}
+.cobalt b{color:#1c2c4d;letter-spacing:.03em}
+.divider{width:1px;height:44px;background:#d9d8d2}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+.kpi,.chart,.controls{background:var(--panel);border:1px solid var(--panel-line);border-radius:14px}
+.kpi{padding:14px 18px;min-height:92px}
+.kpi span.l{color:var(--muted);font-size:16px}
+.kpi .v{font-size:36px;font-weight:500;margin-top:2px}
+.badge{display:inline-block;padding:4px 14px;border-radius:20px;font-size:18px;margin-top:6px;background:var(--pink);color:var(--wine)}
+.badge.ok{background:var(--mint);color:var(--green)}
+.chart{padding:18px 14px 8px;margin-bottom:18px}
+.chart svg{width:100%;height:auto;display:block}
+.chart text{font-family:var(--mono);fill:var(--muted);font-size:13px}
+.stages{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.stage{background:var(--card);border:1px solid var(--panel-line);border-radius:14px;padding:16px 18px}
+.stage .top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.stage .t{font-family:var(--mono);font-size:13px;letter-spacing:.07em;color:var(--muted);text-transform:uppercase}
+.stage .badge{font-size:16px;margin:0;white-space:nowrap}
+.stage p{margin:0;font-size:17px;line-height:1.5}
+.controls{padding:16px 20px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:8px 0}
+.row .n{font-weight:600;font-size:18px}
+.row .d{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.ctl{display:flex;align-items:center;gap:22px}
+.ctl .val{font-family:var(--mono);font-size:18px;min-width:56px;text-align:right}
+input[type=range]{-webkit-appearance:none;appearance:none;width:280px;max-width:40vw;height:8px;border-radius:4px;background:#c4c6bf;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--green);cursor:pointer;border:none}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--green);cursor:pointer;border:none}
+.switch{position:relative;width:60px;height:32px;background:var(--green);border-radius:16px;border:none;cursor:pointer;transition:background .2s;padding:0}
+.switch::after{content:"";position:absolute;top:4px;left:32px;width:24px;height:24px;border-radius:50%;background:#f6f5f1;transition:left .2s}
+.switch.off{background:#a9aca5}
+.switch.off::after{left:4px}
+.yn{font-size:18px;min-width:56px;text-align:right}
+@media(max-width:800px){
+  .kpis,.stages{grid-template-columns:1fr}
+  .row{flex-direction:column;align-items:flex-start}
+  input[type=range]{width:55vw;max-width:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Oney BNPL Debt & Capacity Assessment</h1>
+      <div class="sub">Two-stage responsible credit evaluation simulator</div>
+    </div>
+    <div class="brands">
+      <div class="brand oney"><b>oney</b><small>PARTNER</small></div>
+      <div class="divider"></div>
+      <div class="brand cobalt"><b>COBALT</b><small>STRATEGY GROUP</small></div>
+    </div>
+  </header>
+
+  <section class="kpis">
+    <div class="kpi"><span class="l">Total Monthly Obligation</span><div class="v" id="total">€520</div></div>
+    <div class="kpi"><span class="l">Responsible Debt Ratio</span><div class="v" id="ratio">104%</div></div>
+    <div class="kpi"><span class="l">Assessment Status</span><div><span class="badge" id="status">High Debt Flag</span></div></div>
+  </section>
+
+  <section class="chart"><svg id="chart" viewBox="0 0 1000 330" role="img" aria-label="Debt burden compared to recommended cap and hard limit"></svg></section>
+
+  <section class="stages">
+    <div class="stage">
+      <div class="top"><span class="t">Stage 1: Instant Gatekeeping</span><span class="badge" id="s1b">Extra Check Triggered</span></div>
+      <p id="s1t"></p>
+    </div>
+    <div class="stage">
+      <div class="top"><span class="t">Stage 2: Adaptive Dashboard</span><span class="badge" id="s2b">Capped / Restructured</span></div>
+      <p id="s2t"></p>
+    </div>
+  </section>
+
+  <section class="controls">
+    <div class="row">
+      <div><div class="n">Existing Monthly BNPL</div><div class="d">Current active commitments</div></div>
+      <div class="ctl"><input type="range" id="existing" min="0" max="600" step="10" value="320"><span class="val" id="existingV">€320</span></div>
+    </div>
+    <div class="row">
+      <div><div class="n">New Purchase Monthly</div><div class="d">Requested new installment burden</div></div>
+      <div class="ctl"><input type="range" id="newp" min="0" max="220" step="10" value="200"><span class="val" id="newpV">€200</span></div>
+    </div>
+    <div class="row">
+      <div><div class="n">Customer Age Verified</div><div class="d">Mandatory regulatory check (≥ 18 yrs)</div></div>
+      <div class="ctl"><button class="switch" id="age" aria-label="Customer age verified" aria-pressed="true"></button><span class="yn" id="ageV">Yes</span></div>
+    </div>
+  </section>
+</div>
+
+<script>
+const SOFT = 350, HARD = 500;
+let ageOk = true;
+const $ = id => document.getElementById(id);
+
+function setBadge(el, text, good){
+  el.textContent = text;
+  el.className = 'badge' + (good ? ' ok' : '');
+}
+
+function drawChart(existing, added){
+  const W = 1000, H = 330, L = 70, R = 990, T = 20, B = 285, max = 600;
+  const y = v => B - (v / max) * (B - T);
+  let s = '';
+  [0, 200, 400, 600].forEach(v => {
+    s += `<line x1="${L}" x2="${R}" y1="${y(v)}" y2="${y(v)}" stroke="#c6c5bf" stroke-width="1"/>`;
+    s += `<text x="${L - 10}" y="${y(v) + 4}" text-anchor="end">€${v}</text>`;
+  });
+  s += `<line x1="${L}" x2="${L}" y1="${T}" y2="${B}" stroke="#c6c5bf"/>`;
+  const band = (R - L) / 3, bw = 28;
+  const cx = i => L + band * i + band / 2;
+  const bar = (x, v, fill, base) => {
+    const top = y(base + v), h = y(base) - top;
+    return h > 0 ? `<rect x="${x - bw / 2}" y="${top}" width="${bw}" height="${h}" rx="3" fill="${fill}"/>` : '';
+  };
+  s += bar(cx(0), existing, '#8a9680', 0);
+  s += bar(cx(0), added, '#832c40', existing);
+  s += bar(cx(1), SOFT, '#6c726b', 0);
+  s += bar(cx(2), HARD, '#6c726b', 0);
+  ['Current Burden', 'Recommended Cap', 'Hard Limit'].forEach((l, i) => {
+    s += `<text x="${cx(i)}" y="${B + 30}" text-anchor="middle" style="font-size:14px;fill:#2a332c">${l}</text>`;
+  });
+  $('chart').innerHTML = s;
+}
+
+function update(){
+  const existing = +$('existing').value, added = +$('newp').value;
+  const total = existing + added;
+  $('existingV').textContent = '€' + existing;
+  $('newpV').textContent = '€' + added;
+  $('total').textContent = '€' + total;
+  $('ratio').textContent = Math.round(total / HARD * 100) + '%';
+  drawChart(existing, added);
+
+  // Overall status
+  if (!ageOk) setBadge($('status'), 'Blocked: Age Check', false);
+  else if (total > HARD) setBadge($('status'), 'High Debt Flag', false);
+  else if (total > SOFT) setBadge($('status'), 'Elevated Burden', false);
+  else setBadge($('status'), 'Healthy Capacity', true);
+
+  // Stage 1
+  if (!ageOk){
+    setBadge($('s1b'), 'Rejected', false);
+    $('s1t').textContent = 'Customer is not age-verified. Official ID verification (≥ 18 yrs) is mandatory before any credit decision.';
+  } else if (total > SOFT){
+    setBadge($('s1b'), 'Extra Check Triggered', true);
+    $('s1t').textContent = `Total burden (€${total}) exceeds soft threshold (€${SOFT}). Instant open-banking check triggered.`;
+  } else {
+    setBadge($('s1b'), 'Instant Approval', true);
+    $('s1t').textContent = `Total burden (€${total}) is within the soft threshold (€${SOFT}). Smooth checkout flow, no extra checks.`;
+  }
+
+  // Stage 2
+  if (!ageOk){
+    setBadge($('s2b'), 'Not Available', false);
+    $('s2t').textContent = 'No repayment plan can be created until age verification is completed.';
+  } else if (total > HARD){
+    setBadge($('s2b'), 'Capped / Restructured', false);
+    $('s2t').textContent = 'Repayment terms locked to shorter tenure or lower limit to prevent over-indebtedness.';
+  } else if (total > SOFT){
+    setBadge($('s2b'), 'Monitored', true);
+    $('s2t').textContent = 'Plan allowed with proactive repayment reminders and a capacity review before further purchases.';
+  } else {
+    setBadge($('s2b'), 'Standard Plan', true);
+    $('s2t').textContent = 'Standard repayment terms available. Dashboard shows active plans and upcoming payments.';
+  }
+}
+
+$('existing').addEventListener('input', update);
+$('newp').addEventListener('input', update);
+$('age').addEventListener('click', () => {
+  ageOk = !ageOk;
+  $('age').classList.toggle('off', !ageOk);
+  $('age').setAttribute('aria-pressed', ageOk);
+  $('ageV').textContent = ageOk ? 'Yes' : 'No';
+  update();
+});
+update();
+</script>
+</body>
+</html>
